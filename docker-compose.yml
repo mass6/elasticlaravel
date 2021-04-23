@@ -2,13 +2,13 @@ version: '3.2'
 
 services:
   app:
-    image: mass6/app:latest
+    image: mass6/lemp:latest
     ports:
      - "80:80"
     volumes:
      - .:/var/www/html
     networks:
-     - elk
+     - elasticlaravel
 
   mysql:
     image: mysql:5.7
@@ -22,14 +22,14 @@ services:
     volumes:
       - elasticlaravel:/var/lib/mysql
     networks:
-      - elk
+      - elasticlaravel
 
   redis:
     image: redis:alpine
     ports:
       - "6379:6379"
     networks:
-      - elk
+      - elasticlaravel
 
   elasticsearch:
     build:
@@ -54,33 +54,7 @@ services:
       # see: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
       discovery.type: single-node
     networks:
-      - elk
-
-#   logstash:
-#     build:
-#       context: logstash/
-#       args:
-#         ELK_VERSION: $ELK_VERSION
-#     volumes:
-#       - type: bind
-#         source: ./logstash/config/logstash.yml
-#         target: /usr/share/logstash/config/logstash.yml
-#         read_only: true
-#       - type: bind
-#         source: ./logstash/pipeline
-#         target: /usr/share/logstash/pipeline
-#         read_only: true
-#     ports:
-#       - "5044:5044"
-#       - "5000:5000/tcp"
-#       - "5000:5000/udp"
-#       - "9600:9600"
-#     environment:
-#       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
-#     networks:
-#       - elk
-#     depends_on:
-#       - elasticsearch
+      - elasticlaravel
 
   kibana:
     build:
@@ -95,12 +69,12 @@ services:
     ports:
       - "5601:5601"
     networks:
-      - elk
+      - elasticlaravel
     depends_on:
       - elasticsearch
 
 networks:
-  elk:
+  elasticlaravel:
     driver: bridge
 
 volumes:
